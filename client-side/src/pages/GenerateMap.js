@@ -56,7 +56,7 @@ function GenerateMap() {
     }, [response]);
 
 
-    const location_names = getAllLocationName(parsedResponse);
+    // const location_names = getAllLocationName(parsedResponse);
     // console.log(location_names);
 
     const [center, setCenter] = useState(null);
@@ -65,7 +65,7 @@ function GenerateMap() {
     useEffect(() => {
         const fetchMapData = async () => {
             try {
-                const response = await fetch("https://journey-ai-product-version-server.vercel.app/api/mapbox/map", {
+                const response = await fetch("https://journey-ai-olive.vercel.app/api/mapbox/map", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
