@@ -23,6 +23,7 @@ const model = genAI.getGenerativeModel({
 
 router.post("/gemini_response", async (req, res) => {
     try {
+        console.log("GEMINI API got triggered");
         const { prompt } = req.body; // Correctly destructure the prompt
         console.log("PROMPT:  ");
         console.log(prompt);

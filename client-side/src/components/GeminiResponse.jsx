@@ -3,16 +3,16 @@ import LoadingPage from "./LoadingPage";
 
 function GeminiResponse(props) {
     const [data, setData] = useState('');
-    const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    console.log("Props passed to gemini: ", props.command);
+    const port = 5000;
     useEffect(() => {
         const fetchGeminiData = async () => {
             try {
-                setLoading(true);
+                props.setLoading(true); // Use the setLoading prop
+                console.log("Fetching Gemini Data with command:", props.command); // Add this log
 
-                const response = await fetch("https://journey-ai-olive.vercel.app/api/gemini/gemini_response", {
-                    // mode: 'no-cors',
+                const response = await fetch(`http://localhost:${port}/api/gemini/gemini_response`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -23,20 +23,23 @@ function GeminiResponse(props) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                // console.log("GEMINIResponse: ", data.message);
                 props.onDataReceived(data.message);
                 setData(data.message);
             } catch (error) {
                 setError(error.message);
             } finally {
-                setLoading(false);
+                props.setLoading(false); // Use the setLoading prop
             }
         };
+
+        if(!props.command){
+            console.log("No command passed to GeminiResponse");
+        }
 
         if (props.command) {
             fetchGeminiData();
         }
-    }, [props.command]);
+    }, [props.command, props.setLoading, props.onDataReceived]);
 
     if (error) {
         return <p>Error: {error}</p>;
@@ -44,7 +47,7 @@ function GeminiResponse(props) {
 
     return (
         <div className="GeminiResponse">
-            {isLoading ? <LoadingPage /> : <p>{data}</p>}
+            {props.isLoading ? <LoadingPage /> : <p>{data}</p>}
         </div>
     );
 }
