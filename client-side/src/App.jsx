@@ -12,7 +12,7 @@ import GenerateDestinationPage from './pages/GenerateDestinationPage.js';
 import GenerateMap from './pages/GenerateMap.js';
 import { useUser } from './UserContext.js';
 import DonationPage from './pages/DonationPage.js'
-import TestingComponent from './pages/TestingPage.js';
+// import TestingComponent from './pages/TestingPage.js';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -46,7 +46,7 @@ function App() {
         <Route path='/donation' element={<DonationPage/>}/>
         <Route path='/' element={<MainPage />}/>
         <Route path='/destination' element={<GenerateMap/>} />
-        <Route path='/testingpage' element={<TestingComponent/>}/>
+        {/* <Route path='/testingpage' element={<TestingComponent/>}/> */}
         {/* Protected Routes */}
         <Route path='/saved_plans' element={
           <ProtectedrRoutes user={user}>

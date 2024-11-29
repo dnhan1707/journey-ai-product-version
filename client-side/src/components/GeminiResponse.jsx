@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import LoadingPage from "./LoadingPage";
+// import LoadingPage from "./LoadingPage";
 
 function GeminiResponse(props) {
     const [data, setData] = useState('');
@@ -45,11 +45,11 @@ function GeminiResponse(props) {
         return <p>Error: {error}</p>;
     }
 
-    return (
-        <div className="GeminiResponse">
-            {props.isLoading ? <LoadingPage /> : <p>{data}</p>}
-        </div>
-    );
+    // return (
+    //     <div className="GeminiResponse">
+    //         {props.isLoading ? <LoadingPage /> : <p>{data}</p>}
+    //     </div>
+    // );
 }
 
 export default GeminiResponse;

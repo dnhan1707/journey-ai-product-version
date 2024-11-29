@@ -6,7 +6,7 @@ import "../css/GenerateMap.css"
 import DetailContainer from "../components/DetailContainer.jsx";
 import { useUser } from "../UserContext.js";
 // import CustomizePlan from "../components/CustomizePlan.jsx";
-
+const port = 5000;
 // public token
 mapboxgl.accessToken = process.env.REACT_APP_MAP_BOX;
 
@@ -65,7 +65,7 @@ function GenerateMap() {
     useEffect(() => {
         const fetchMapData = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/mapbox/map", {
+                const response = await fetch(`http://localhost:${port}/api/mapbox/map`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
