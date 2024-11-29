@@ -28,7 +28,7 @@ function Command() {
     const navigate = useNavigate();
 
     const handleSubmit = async () => {
-        console.log("handleSubmit called"); // Debug log
+        // console.log("handleSubmit called"); // Debug log
         if (!location) {
             setError("Please input the location");
             setopenSnackBar(true);
@@ -37,15 +37,15 @@ function Command() {
 
         localStorage.removeItem('currentPlanId');
         const prompt = journeyCmd(location, numOfPeople, day, theme, specialRequest, budget);
-        console.log("Generated Command:", prompt); // Debug log
+        // console.log("Generated Command:", prompt); // Debug log
         setCommand(prompt);
-        console.log("Command set:", prompt); // Debug log
+        // console.log("Command set:", prompt); // Debug log
         setLoading(true);
     };
 
     const handleResponse = (data) => {
         //reset
-        console.log("Command before reset: ", command);
+        // console.log("Command before reset: ", command);
         setCommand(null);
         setNumOfPeople(null);
         setDay(null);
@@ -69,14 +69,10 @@ function Command() {
 
     useEffect(() => {
         if (responseData) {
-            console.log("Response Data: ", responseData);
+            // console.log("Response Data: ", responseData);
             navigate('/destination', { state: { location: location, responseData: responseData } });
         }
     }, [responseData]);
-
-    useEffect(() => {
-        console.log("Command state changed:", command);
-    }, [command]);
 
     return (
         <>

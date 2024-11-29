@@ -4,13 +4,13 @@ import LoadingPage from "./LoadingPage";
 function GeminiResponse(props) {
     const [data, setData] = useState('');
     const [error, setError] = useState(null);
-    console.log("Props passed to gemini: ", props.command);
+    // console.log("Props passed to gemini: ", props.command);
     const port = 5000;
     useEffect(() => {
         const fetchGeminiData = async () => {
             try {
                 props.setLoading(true); // Use the setLoading prop
-                console.log("Fetching Gemini Data with command:", props.command); // Add this log
+                // console.log("Fetching Gemini Data with command:", props.command); // Add this log
 
                 const response = await fetch(`http://localhost:${port}/api/gemini/gemini_response`, {
                     method: "POST",
@@ -32,9 +32,9 @@ function GeminiResponse(props) {
             }
         };
 
-        if(!props.command){
-            console.log("No command passed to GeminiResponse");
-        }
+        // if(!props.command){
+        //     console.log("No command passed to GeminiResponse");
+        // }
 
         if (props.command) {
             fetchGeminiData();
