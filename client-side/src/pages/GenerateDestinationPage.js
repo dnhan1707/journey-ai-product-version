@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useUser } from "../UserContext.js";
 import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../css/GenerateMap.css";
@@ -15,21 +16,19 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fas, far, fab)
 
-// public token
 mapboxgl.accessToken = process.env.REACT_APP_MAP_BOX;
 
-// initialize map obj with CTOR
 const init_map = (map_ref) => {
     return new mapboxgl.Map({
         container: map_ref.current,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-118.2437, 34.0522], // initial center of map when first loaded
-        zoom: 10, // initial zoom level
+        center: [-118.2437, 34.0522],
+        zoom: 10,
     });
 };
 
 function createCard(activity, activityIndex) {
-    return <GenerateDestinationCard activity={activity} activityIndex={activityIndex} />;
+    return <GenerateDestinationCard key={activityIndex} activity={activity} activityIndex={activityIndex} />;
 }
 
 function GenerateDestinationPage() {
@@ -40,22 +39,24 @@ function GenerateDestinationPage() {
     const map_ref = useRef(null);
     const map_obj = useRef(null);
     const marker_obj = useRef(null);
-    const [city, setCity] = useState('')
-
+    const [city, setCity] = useState('');
+    const { userUid, getPlanById } = useUser();
 
     const dataPassedHere = useLocation();
-    const data = dataPassedHere.state.saved_plans;
     const plan_id = dataPassedHere.state.plan_id;
-    // console.log("Chosen plan_id: ", plan_id)
-    // const plan_id = 1;
-
-    // console.log(data);
 
     useEffect(() => {
-        const plan = data.find(p => p.plan_id === plan_id);
-        setPlanData(plan);
-        setOpen(new Array(plan.itinerary.length).fill(true));
-    }, [data, plan_id])
+        const fetchPlanData = async () => {
+            const data = await getPlanById(userUid, plan_id);
+            console.log(data);
+            setPlanData(data);
+            if (data && data.itinerary) {
+                setOpen(new Array(data.itinerary.length).fill(true));
+            }
+        };
+
+        fetchPlanData();
+    }, [plan_id, getPlanById, userUid]);
 
     useEffect(() => {
         if (planData && planData.city) {
@@ -145,7 +146,6 @@ function GenerateDestinationPage() {
                                         </div>
                                     </button>
                                     
-
                                     {open[index] && (
                                         <div className="dropdown">
                                             <ul>

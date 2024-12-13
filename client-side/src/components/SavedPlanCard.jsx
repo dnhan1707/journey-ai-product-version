@@ -2,11 +2,11 @@ import FetchImage from "./FetchImage.js"
 import "../css/SavedPlanCard.css"
 import { useNavigate } from "react-router-dom";
 
-function SavedPlanCard({tripname, city, days, userId, planId, saved_plans_data}){
+function SavedPlanCard({tripname, city, days, planId}){
     const navigate = useNavigate()
 
     const handleCardClicked = () => {
-        navigate(`/saved_plans/destination`, {state: {saved_plans: saved_plans_data, plan_id: planId, from: "/saved_plans/destination"}});
+        navigate(`/saved_plans/destination`, {state: {plan_id: planId, from: "/saved_plans/destination"}});
     }
 
     return (
