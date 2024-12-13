@@ -20,7 +20,6 @@ function Card(props) {
     const [photoUrl, setPhotoUrl] = usePersistState(default_pic, `photoUrl_${props.activity.location_name}`);
     const [placeName, setPlaceName] = usePersistState('', 'placeName:' + props.activityIndex);
 
-
     const handleCloseSnackBar = (event, reason) => {
         if(reason === 'clickaway'){
             return;
@@ -55,9 +54,11 @@ function Card(props) {
                     
                     const newActivity = {
                         location_name: details.place_name || "Not Found",
+                        name: props.activity.name || "Not Found",
                         type: props.activity.type || "Not Found",
                         duration: props.activity.duration || "Not Found",
                         description: props.activity.description || "Not Found", 
+                        price_level: props.activity.price_level || "Not Found",
                         place_detail: {
                             location: detailData.geometry?.location || "Not Found",
                             place_id: details.place_id || "Not Found",
@@ -72,13 +73,13 @@ function Card(props) {
                             reviews: detailData.reviews || []
                         }
                     };
-                    addNewActivity(newActivity, props.dayindex, props.activityIndex);
+                    addNewActivity(props.day, newActivity); // Pass the day and activity
                 }
             } catch (err) {
                 console.error("Error fetching place details:", err);
             }
         }
-    }, [placeDetailData, photoUrl, props.activity.location_name, userUid, addNewActivity]);
+    }, [placeDetailData, photoUrl, props.activity.location_name, userUid, addNewActivity, props.day]);
 
     useEffect(() => {
         fetchPlaceDetailData();
@@ -96,7 +97,6 @@ function Card(props) {
 
     return (
         <>
-            
             <Snackbar
                 open={openSnackBar}
                 autoHideDuration={5000}
@@ -118,7 +118,7 @@ function Card(props) {
                         show={openDetail}
                         onClose={cardDetailClicked}
                         placeDetailData={placeDetailData}
-                        placeName={placeName}
+                        placeName={props.activity.name}
                         photoURL={photoUrl}
                     />
                 )}
@@ -133,7 +133,7 @@ function Card(props) {
                                 onClick={cardDetailClicked}
                                 title={!userUid ? "Please Log-in or Sign-up to see more detail" : ""}
                             >
-                                <FontAwesomeIcon icon={iconDefinition} className="mr-2" /> {placeName}
+                                <FontAwesomeIcon icon={iconDefinition} className="mr-2" /> {props.activity.name}
                             </button>
                             <p className="card-description w-5/6 text-slate-500 text-base mt-1">{props.activity.description}</p>
                         </div>

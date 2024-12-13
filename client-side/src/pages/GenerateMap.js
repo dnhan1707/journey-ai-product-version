@@ -20,21 +20,21 @@ const init_map = (map_ref) => {
     });
 };
 
-function getAllLocationName(responseData){
-    if (!responseData || !responseData.itinerary) return [];
+// function getAllLocationName(responseData){
+//     if (!responseData || !responseData.itinerary) return [];
 
-    const itinerary = responseData.itinerary;
-    const location_names = [];
+//     const itinerary = responseData.itinerary;
+//     const location_names = [];
 
-    itinerary.forEach(days => {
-        let activities = days.activities;
-        activities.forEach(activity => {
-            location_names.push(activity.location_name);
-        });
-    });
+//     itinerary.forEach(days => {
+//         let activities = days.activities;
+//         activities.forEach(activity => {
+//             location_names.push(activity.location_name);
+//         });
+//     });
 
-    return location_names;
-}
+//     return location_names;
+// }
 
 function GenerateMap() {
     const [parsedResponse, setParsedResponse] = useState(null);
