@@ -31,6 +31,10 @@ function Card(props) {
         if (!placeDetailData || !photoUrl) {
             try {
                 const details = await placeSearch(props.activity.location_name);
+                if (!details) {
+                    throw new Error('No place details found');
+                }
+
                 const photoURL = await placePhotoWithRef(details.photo_reference);
                 
                 if (details) {
@@ -47,13 +51,17 @@ function Card(props) {
 
                 if (userUid && details.place_id) {
                     const detailData = await placeDetail(details.place_id);
+                    if (!detailData) {
+                        throw new Error('No place details found');
+                    }
+
                     setPlaceDetailData((prevData) => ({
                         ...prevData,
                         ...detailData,
                     }));
                     
                     const newActivity = {
-                        location_name: details.place_name || "Not Found",
+                        location_name: "Test", // Change to "Test" for debugging
                         name: props.activity.name || "Not Found",
                         type: props.activity.type || "Not Found",
                         duration: props.activity.duration || "Not Found",
@@ -73,6 +81,7 @@ function Card(props) {
                             reviews: detailData.reviews || []
                         }
                     };
+                    console.log("New Activity:", newActivity); // Log newActivity
                     addNewActivity(props.day, newActivity); // Pass the day and activity
                 }
             } catch (err) {
