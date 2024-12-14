@@ -52,4 +52,8 @@ function GeminiResponse(props) {
     // );
 }
 
+
+// Create function that deal with the response from the API using the place search
+
+
 export default GeminiResponse;

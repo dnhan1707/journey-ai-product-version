@@ -40,8 +40,8 @@ export const UserProvider = ({ children }) => {
     };
 
     try {
-      await setDoc(newPlanRef, newPlan);
-      console.log("Plan saved successfully");
+      // await setDoc(newPlanRef, newPlan);
+      console.log("Plan saved successfully: ", newPlan);
     } catch (error) {
       console.error("Error saving plan:", error);
     }
