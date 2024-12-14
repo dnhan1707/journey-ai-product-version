@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { doc, getDoc, getDocs, setDoc, serverTimestamp, collection, deleteDoc } from "firebase/firestore";
 import { db } from "./firebase/firebase.js";
 
@@ -16,10 +16,16 @@ export const UserProvider = ({ children }) => {
 
   const addNewActivity = (day, activity) => {
     setItinerary(prevItinerary => {
-      const updatedDay = prevItinerary[day] ? [...prevItinerary[day], activity] : [activity];
-      return { ...prevItinerary, [day]: updatedDay };
+      const updatedDay = prevItinerary[`day${day}`] ? [...prevItinerary[`day${day}`].activities, activity] : [activity];
+      const newItinerary = { ...prevItinerary, [`day${day}`]: { activities: updatedDay } };
+      console.log("Updated Itinerary in addNewActivity:", newItinerary); // Log updated itinerary
+      return newItinerary;
     });
   };
+
+  useEffect(() => {
+    console.log("Updated itinerary:", itinerary);
+  }, [itinerary]);
 
   const savePlan = async () => {
     const savedPlansRef = collection(db, "users", userUid, "saved_plans");
@@ -27,7 +33,7 @@ export const UserProvider = ({ children }) => {
     const newPlan = {
         city: city,
         duration: duration,
-        itinerary: itinerary, // Correctly use the `itinerary` state
+        itinerary: itinerary, // Correctly use the itinerary state
         tripname: tripName,
         estimated_total: totalEstimation,
         created_at: serverTimestamp()

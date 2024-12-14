@@ -15,7 +15,7 @@ function createCard(activity, activityIndex, dayindex) {
     return <Card 
     activity={activity} 
     activityIndex={activityIndex} 
-    dayindex={dayindex}
+    day={dayindex + 1} // Pass the day as a prop
     />;
 }
 
@@ -30,15 +30,15 @@ function DisplayCard({ response, onCardDataFetched  }) {
             const parsed = typeof response === 'string' ? JSON.parse(response) : response;
             setParsedResponse(parsed);
 
-            const initialItinerary = parsed.itinerary.map((day, dayIndex) => ({
-                day: dayIndex + 1,
-                activities: day.activities || []
-            }));
+            const initialItinerary = parsed.itinerary.reduce((acc, day, dayIndex) => {
+                acc[`day${dayIndex + 1}`] = { activities: day.activities || [] };
+                return acc;
+            }, {});
 
             setItinerary(initialItinerary);
 
             // Initialize the open state based on the number of days in the itinerary
-            setOpen(new Array(parsed.itinerary.length).fill(true)); // Start with all dropdowns closed
+            setOpen(new Array(parsed.itinerary.length).fill(true)); // Start with all dropdowns open
         } catch (error) {
             console.error('Error parsing response:', error);
         }
