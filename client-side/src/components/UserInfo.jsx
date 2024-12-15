@@ -7,7 +7,7 @@ import usePersistState from "../usePersistState";
 
 function UserInfo({ likeOption, isInSavedDestinationPage, plan_id }) {
     const currentDate = new Date();
-    const { savePlan, userUid } = useUser();
+    const { savePlan, userUid, planIdJustSaved, removePlan } = useUser();
     const [openSnackBar, setOpenSnackBar] = useState(false);
 
     // Initialize state based on either likeOption or localStorage
@@ -38,9 +38,9 @@ function UserInfo({ likeOption, isInSavedDestinationPage, plan_id }) {
 
         if (newLikedState) {
             savePlan();
-            console.log("Plan saved to cloud");
-        } else {
-            console.log("Activity removed from the list");
+            // console.log("Plan saved to cloud");
+        } else {            
+            removePlan(planIdJustSaved);
         }
     }, [liked, savePlan, userUid]);
 
