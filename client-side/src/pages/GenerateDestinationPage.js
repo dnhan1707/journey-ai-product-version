@@ -10,45 +10,47 @@ import ImageContainer from "../components/ImageContainer.jsx";
 import UserInfo from "../components/UserInfo.jsx";
 import GenerateDestinationCard from "../components/GenerateDestinationCard.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-library.add(fas, far, fab)
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+library.add(fas, far, fab);
 
 mapboxgl.accessToken = process.env.REACT_APP_MAP_BOX;
 
-const init_map = (map_ref) => {
+// Initialize the map
+const initMap = (mapRef) => {
     return new mapboxgl.Map({
-        container: map_ref.current,
+        container: mapRef.current,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: [-118.2437, 34.0522],
         zoom: 10,
     });
 };
 
-function createCard(activity, activityIndex) {
-    return <GenerateDestinationCard key={activityIndex} activity={activity} activityIndex={activityIndex} />;
-}
+// Create a card component for each activity
+const createCard = (activity, activityIndex) => (
+    <GenerateDestinationCard key={activityIndex} activity={activity} activityIndex={activityIndex} />
+);
 
 function GenerateDestinationPage() {
     const [open, setOpen] = useState([]);
     const [planData, setPlanData] = useState(null);
     const [center, setCenter] = useState(null);
     const [zoom, setZoom] = useState(null);
-    const map_ref = useRef(null);
-    const map_obj = useRef(null);
-    const marker_obj = useRef(null);
+    const mapRef = useRef(null);
+    const mapObj = useRef(null);
+    const markerObj = useRef(null);
     const [city, setCity] = useState('');
     const { userUid, getPlanById } = useUser();
+    const { state } = useLocation();
+    const planId = state.plan_id;
 
-    const dataPassedHere = useLocation();
-    const plan_id = dataPassedHere.state.plan_id;
-
+    // Fetch plan data
     useEffect(() => {
         const fetchPlanData = async () => {
-            const data = await getPlanById(userUid, plan_id);
-            console.log(data);
+            const data = await getPlanById(planId);
             setPlanData(data);
             if (data && data.itinerary) {
                 setOpen(new Array(data.itinerary.length).fill(true));
@@ -56,8 +58,9 @@ function GenerateDestinationPage() {
         };
 
         fetchPlanData();
-    }, [plan_id, getPlanById, userUid]);
+    }, [planId, getPlanById, userUid]);
 
+    // Fetch map data
     useEffect(() => {
         if (planData && planData.city) {
             setCity(planData.city);
@@ -87,15 +90,17 @@ function GenerateDestinationPage() {
         }
     }, [planData]);
 
+    // Initialize the map
     useEffect(() => {
-        if (!map_obj.current) {
-            map_obj.current = init_map(map_ref);
+        if (!mapObj.current) {
+            mapObj.current = initMap(mapRef);
         }
     }, []);
 
+    // Update the map center and zoom
     useEffect(() => {
-        if (map_obj.current && center) {
-            map_obj.current.flyTo({
+        if (mapObj.current && center) {
+            mapObj.current.flyTo({
                 center: center,
                 zoom: zoom,
                 essential: true
@@ -105,16 +110,17 @@ function GenerateDestinationPage() {
         if (center) {
             const lngLat = { lon: center[0], lat: center[1] };
 
-            if (!marker_obj.current) {
-                marker_obj.current = new mapboxgl.Marker({ color: 'red' });
-                marker_obj.current.setLngLat(lngLat);
-                marker_obj.current.addTo(map_obj.current);
+            if (!markerObj.current) {
+                markerObj.current = new mapboxgl.Marker({ color: 'red' });
+                markerObj.current.setLngLat(lngLat);
+                markerObj.current.addTo(mapObj.current);
             } else {
-                marker_obj.current.setLngLat(lngLat);
+                markerObj.current.setLngLat(lngLat);
             }
         }
     }, [center, zoom]);
 
+    // Toggle dropdown visibility
     const toggleDown = (index) => {
         setOpen((prevState) => {
             const newState = [...prevState];
@@ -127,12 +133,12 @@ function GenerateDestinationPage() {
         <div className="mapPage">
             <div className="map relative">
                 <CustomizePlan />
-                <div ref={map_ref} style={{ width: '100%', height: '100%' }}></div>
+                <div ref={mapRef} style={{ width: '100%', height: '100%' }}></div>
             </div>
             <div className="dummy absolute top-0 left-0 w-full h-10 bg-white text-center text-white z-50 lg:hidden md:hidden"></div>
-            <div className="detail_container pb-10 ">
-                <ImageContainer location={city}></ImageContainer>
-                <UserInfo likeOption={true} isInSavedDestinationPage={true}/>
+            <div className="detail_container pb-10">
+                <ImageContainer location={city} response={planData}/>
+                <UserInfo likeOption={true} isInSavedDestinationPage={true} />
 
                 <div className="detail_plan">
                     <div id="card-container">
@@ -142,7 +148,7 @@ function GenerateDestinationPage() {
                                     <button id="drop-down-days" className="day_plan w-full" type="button" onClick={() => toggleDown(index)}>
                                         <div className="flex items-center justify-between border-b-2 border-gray-300">
                                             <h1>Day {index + 1}</h1>
-                                            <FontAwesomeIcon icon="fa-solid fa-caret-down" />
+                                            <FontAwesomeIcon icon={open[index] ? "fa-solid fa-caret-up" : "fa-solid fa-caret-down"} />
                                         </div>
                                     </button>
                                     

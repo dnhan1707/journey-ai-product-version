@@ -11,8 +11,10 @@ function SavedPlanPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const planIds = await getSavedPlanId(userUid);
-      const data = await getSavedPlans(userUid);
+      const planIds = await getSavedPlanId();
+      // console.log("Plan IDs:", planIds);
+      const data = await getSavedPlans();
+      // console.log("Saved Plans:", data);
 
       setSavedPlan(data);
       setPlanIds(planIds);
@@ -45,7 +47,7 @@ function SavedPlanPage() {
 
                 return (
                   <SavedPlanCard
-                    tripname={plan.tripname}
+                    tripname={plan.tripName}
                     city={plan.city}
                     days={plan.duration}
                     // userId={userUid}
