@@ -1,27 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import SavedPlanCard from "../components/SavedPlanCard.jsx";
 import Header from "../components/Header.jsx";
-
 import { useUser } from '../UserContext.js';
 
 function SavedPlanPage() {
   const [savedPlan, setSavedPlan] = useState(null);
   const [planIds, setPlanIds] = useState([]);
-  const { userUid, getSavedPlans, getSavedPlanId } = useUser();
+  const { userUid, getSavedPlans } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
-      const planIds = await getSavedPlanId();
-      // console.log("Plan IDs:", planIds);
       const data = await getSavedPlans();
-      // console.log("Saved Plans:", data);
 
       setSavedPlan(data);
-      setPlanIds(planIds);
+      setPlanIds(Object.keys(data)); // Set planIds with the keys of the savedPlan object
     };
 
     fetchData();
   }, [userUid]);
+
+  const handleRemove = (planId) => {
+    setSavedPlan((prevSavedPlan) => {
+      const updatedSavedPlan = {...prevSavedPlan};
+      delete updatedSavedPlan[planId];
+      return updatedSavedPlan;
+    })
+    setPlanIds((prevPlanIds) => prevPlanIds.filter((id) => id !== planId))
+  }
 
 
   return (
@@ -50,9 +55,8 @@ function SavedPlanPage() {
                     tripname={plan.tripName}
                     city={plan.city}
                     days={plan.duration}
-                    // userId={userUid}
                     planId={planId}
-                    // saved_plans_data={savedPlan}
+                    onRemove={handleRemove}
                   />
                 )
               })
