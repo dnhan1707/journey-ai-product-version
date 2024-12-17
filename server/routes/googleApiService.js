@@ -17,11 +17,11 @@ if (!GG_PLACE_KEY){
 router.post("/place_detail", async (req, res) => {
     try {
         const {place_id} = req.body;
-        console.log("Place ID: ", place_id);
+        // console.log("Place ID: ", place_id);
         const fields = ["formatted_address", "formatted_phone_number", "international_phone_number", "opening_hours", "url", "website", "rating", "reviews", "geometry"];
         const fieldsParams = fields.join(",");
         const response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json?fields=${fieldsParams}&place_id=${place_id}&key=${GG_PLACE_KEY}`);
-        console.log("------------->GG PLACE Detail RESPONSE:   ", response.data);
+        // console.log("------------->GG PLACE Detail RESPONSE:   ", response.data);
 
         res.json({place_detail: response.data});
         console.log("PLACE DETAIL API got triggered");
