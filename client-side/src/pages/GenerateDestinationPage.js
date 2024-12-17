@@ -39,14 +39,16 @@ function GenerateDestinationPage() {
     const [planData, setPlanData] = useState(null);
     const [center, setCenter] = useState(null);
     const [zoom, setZoom] = useState(null);
+
     const mapRef = useRef(null);
     const mapObj = useRef(null);
     const markerObj = useRef(null);
+
     const [city, setCity] = useState('');
     const { userUid, getPlanById } = useUser();
     const { state } = useLocation();
     const planId = state.plan_id;
-
+    // const [isSaved, setisSaved] = useState(false);
     // Fetch plan data
     useEffect(() => {
         const fetchPlanData = async () => {
@@ -56,6 +58,9 @@ function GenerateDestinationPage() {
                 setOpen(new Array(data.itinerary.length).fill(true));
             }
         };
+
+        console.log("here dest page", fetchPlanData);
+        console.log("here dest page", planData);
 
         fetchPlanData();
     }, [planId, getPlanById, userUid]);
@@ -78,6 +83,8 @@ function GenerateDestinationPage() {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
+                    console.log("mapdata: ", fetchMapData);
+
                     const data = await response.json();
                     setCenter(data.center);
                     setZoom(data.zoom);
@@ -89,6 +96,34 @@ function GenerateDestinationPage() {
             fetchMapData();
         }
     }, [planData]);
+
+
+    // //save button function 
+    // const savePlan = async() => {
+    //     try {
+    //         const response = await fetch("http://localhost:3001/api/savedplans", {
+    //             method : "POST",
+    //             headers : {
+    //                 'Content-Type' : 'application/json'
+    //             }, 
+    //             body : JSON.stringify({
+    //                 userUid : userUid,
+    //                 planId : planId,
+    //                 planData : planData,
+    //             })
+    //         });
+
+    //         if(response.ok)
+    //         {
+    //             setisSaved(true);
+    //         } else {
+    //             console.error("error saving!");
+    //         }
+    //     } catch (e) {
+    //         console.e("error saving plan", e);
+    //     }
+    // }
+
 
     // Initialize the map
     useEffect(() => {
@@ -139,7 +174,15 @@ function GenerateDestinationPage() {
             <div className="detail_container pb-10">
                 <ImageContainer location={city} response={planData}/>
                 <UserInfo likeOption={true} isInSavedDestinationPage={true} />
-
+                {/* <button 
+                    type = "button"     
+                    style={{ display: 'block', backgroundColor: 'red', color: 'white' }} // Debugging styles
+                    onClick={savePlan} 
+                    className="save-plan-btn bg-blue-500 text-white px-4 py-2 rounded mt-4" 
+                    disabled={isSaved}>
+                                        {isSaved ? "Plan Saved" : "Save Plan"}
+                </button> */}
+                
                 <div className="detail_plan">
                     <div id="card-container">
                         {planData && planData.itinerary ? (
