@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useAsyncError, useLocation } from "react-router-dom";
 import { useUser } from "../UserContext.js";
 import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -43,6 +43,7 @@ function GenerateDestinationPage() {
     const mapRef = useRef(null);
     const mapObj = useRef(null);
     const markerObj = useRef(null);
+    const [coordArray, setCoordArray] = useState([]);
 
     const [city, setCity] = useState('');
     const { userUid, getPlanById } = useUser();
@@ -53,14 +54,27 @@ function GenerateDestinationPage() {
     useEffect(() => {
         const fetchPlanData = async () => {
             const data = await getPlanById(planId);
+
             setPlanData(data);
             if (data && data.itinerary) {
                 setOpen(new Array(data.itinerary.length).fill(true));
+                console.log(data);
+
+                console.log("plan id: ", planId);
+
+                const extractCoord = []
+                data.itinerary.forEach(day => {
+                    day.activities.forEach(activity => {
+                        extractCoord.push(activity.place_detail.location);
+                    })
+                })
+        
+                setCoordArray(extractCoord);
+                console.log(coordArray);
             }
+    
         };
 
-        console.log("here dest page", fetchPlanData);
-        console.log("here dest page", planData);
 
         fetchPlanData();
     }, [planId, getPlanById, userUid]);
@@ -83,11 +97,12 @@ function GenerateDestinationPage() {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
-                    console.log("mapdata: ", fetchMapData);
+                    console.log("mapdata: ", planData.city);
 
                     const data = await response.json();
                     setCenter(data.center);
                     setZoom(data.zoom);
+
                 } catch (error) {
                     console.error('Error fetching map data:', error);
                 }
@@ -97,32 +112,6 @@ function GenerateDestinationPage() {
         }
     }, [planData]);
 
-
-    // //save button function 
-    // const savePlan = async() => {
-    //     try {
-    //         const response = await fetch("http://localhost:3001/api/savedplans", {
-    //             method : "POST",
-    //             headers : {
-    //                 'Content-Type' : 'application/json'
-    //             }, 
-    //             body : JSON.stringify({
-    //                 userUid : userUid,
-    //                 planId : planId,
-    //                 planData : planData,
-    //             })
-    //         });
-
-    //         if(response.ok)
-    //         {
-    //             setisSaved(true);
-    //         } else {
-    //             console.error("error saving!");
-    //         }
-    //     } catch (e) {
-    //         console.e("error saving plan", e);
-    //     }
-    // }
 
 
     // Initialize the map
