@@ -70,7 +70,7 @@ function GenerateDestinationPage() {
                 })
         
                 setCoordArray(extractCoord);
-                console.log(coordArray);
+                console.log(extractCoord);
             }
     
         };
@@ -85,7 +85,7 @@ function GenerateDestinationPage() {
             setCity(planData.city);
             const fetchMapData = async () => {
                 try {
-                    const response = await fetch("http://localhost:3001/api/mapbox/map", {
+                    const response = await fetch("http://localhost:5000/api/mapbox/map", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -131,18 +131,17 @@ function GenerateDestinationPage() {
             });
         }
 
-        if (center) {
-            const lngLat = { lon: center[0], lat: center[1] };
-
-            if (!markerObj.current) {
-                markerObj.current = new mapboxgl.Marker({ color: 'red' });
-                markerObj.current.setLngLat(lngLat);
-                markerObj.current.addTo(mapObj.current);
-            } else {
-                markerObj.current.setLngLat(lngLat);
+        if (coordArray?.length > 0)
+            {
+                coordArray.forEach(coord => {
+                    const lngLat = {lng : coord.lng, lat : coord.lat };
+                    
+                    const marker = new mapboxgl.Marker({color: 'red'});
+                    marker.setLngLat(lngLat);
+                    marker.addTo(mapObj.current);
+                });
             }
-        }
-    }, [center, zoom]);
+    }, [center, zoom, coordArray]);
 
     // Toggle dropdown visibility
     const toggleDown = (index) => {
