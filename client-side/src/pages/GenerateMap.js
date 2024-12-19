@@ -69,6 +69,8 @@ function GenerateMap() {
                 const data = await response.json();
                 setCenter(data.center);
                 setZoom(data.zoom);
+
+                
             } catch (error) {
                 console.error('Error fetching map data:', error);
             }
