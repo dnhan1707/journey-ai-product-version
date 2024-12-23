@@ -57,13 +57,13 @@ function LocationInput({ setLocation }) {
     }, [apiKey, setLocation]);
 
     return (
-        <div>
-            <form className="w-full">
+        <div className="flex-1">
+            <form className="w-full h-full">
                 <label htmlFor="search"
                        className="mb-0.5 text-sm font-medium text-black sr-only dark:text-white">Your destination</label>
 
-                <div className="flex justify-center">
-                    <div className="relative w-full">
+                <div className="flex justify-center h-full">
+                    <div className="relative w-full h-full">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -76,7 +76,7 @@ function LocationInput({ setLocation }) {
                             type="search"
                             id="autocompletesearch"
                             onChange={ handleChange }
-                            className="block w-full p-3 ps-12 text-sm text-black border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+                            className="block w-full p-3 ps-12 text-sm text-black border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 h-full"
                             placeholder="Your destination"
                             value={selectedPlace}
                             required
